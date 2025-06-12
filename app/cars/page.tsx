@@ -1,11 +1,13 @@
-import { Card, CardContent } from "@/components/ui/card"
+import Link from "next/link"
+import Image from "next/image"
+import { Card } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { executeQuery } from "@/lib/db"
 import { getSession } from "@/lib/auth"
-import { FeaturedCars } from "@/components/featured-cars"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Search, Heart, Star } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Link from "next/link"
 
 export default async function CarsPage({
   searchParams,
@@ -63,77 +65,112 @@ export default async function CarsPage({
   `)
 
   return (
-    <div className="min-h-screen">
-      <header className="bg-primary text-primary-foreground py-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold">
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <header className="border-b border-gray-100">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <Link href="/" className="text-2xl font-bold text-gray-900">
             CSBS
           </Link>
-          <nav className="space-x-4">
-            <Link href="/cars" className="hover:underline">
-              Browse Cars
-            </Link>
+          <div className="flex items-center gap-6">
+            <nav className="hidden md:flex items-center gap-6">
+              <Link href="/cars" className="text-gray-600 hover:text-gray-900 font-medium">
+                Browse Cars
+              </Link>
+              <Link href="/about" className="text-gray-600 hover:text-gray-900">
+                About
+              </Link>
+              <Link href="/support" className="text-gray-600 hover:text-gray-900">
+                Support
+              </Link>
+            </nav>
             {session ? (
-              <>
-                <Link href={`/dashboard/${session.role}`} className="hover:underline">
+              <div className="flex items-center gap-4">
+                <Link href={`/dashboard/${session.role}`} className="text-gray-600 hover:text-gray-900">
                   Dashboard
                 </Link>
-                <Link href="/logout" className="hover:underline">
-                  Logout
-                </Link>
-              </>
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/logout">Logout</Link>
+                </Button>
+              </div>
             ) : (
-              <>
-                <Link href="/login" className="hover:underline">
+              <div className="flex items-center gap-4">
+                <Link href="/login" className="text-gray-600 hover:text-gray-900">
                   Login
                 </Link>
-                <Link href="/register" className="hover:underline">
-                  Register
-                </Link>
-              </>
+                <Button asChild size="sm">
+                  <Link href="/register">Register</Link>
+                </Button>
+              </div>
             )}
-          </nav>
+          </div>
         </div>
       </header>
 
-      <main className="container mx-auto py-8">
-        <h1 className="text-3xl font-bold mb-6">Browse Cars</h1>
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Filters Sidebar */}
+          <div className="w-full md:w-64 shrink-0">
+            <div className="sticky top-4">
+              <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+                  <h2 className="font-bold text-gray-900">Filters</h2>
+                  <Button variant="ghost" size="sm" className="h-8 text-xs">
+                    Reset All
+                  </Button>
+                </div>
 
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <form className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Make</label>
-                <Select name="make" defaultValue={make || "Any Make"}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Any Make" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Any Make">Any Make</SelectItem>
+                <div className="p-4 border-b border-gray-200">
+                  <h3 className="font-medium text-sm mb-3">Make</h3>
+                  <div className="space-y-2">
                     {makes.map((m) => (
-                      <SelectItem key={m.make} value={m.make}>
-                        {m.make}
-                      </SelectItem>
+                      <div key={m.make} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={`make-${m.make}`}
+                          className="rounded text-primary focus:ring-primary"
+                          defaultChecked={make === m.make}
+                        />
+                        <label htmlFor={`make-${m.make}`} className="ml-2 text-sm text-gray-700">
+                          {m.make}
+                        </label>
+                      </div>
                     ))}
-                  </SelectContent>
-                </Select>
+                  </div>
+                </div>
+
+                <div className="p-4 border-b border-gray-200">
+                  <h3 className="font-medium text-sm mb-3">Price Range</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Input type="number" placeholder="Min" className="h-9 text-sm" defaultValue={minPrice} />
+                    </div>
+                    <div>
+                      <Input type="number" placeholder="Max" className="h-9 text-sm" defaultValue={maxPrice} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4">
+                  <Button className="w-full">Apply Filters</Button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1">
+            {/* Search and Sort */}
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-6">
+              <div className="relative w-full md:w-auto md:flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input type="text" placeholder="Search by make, model, or keyword" className="pl-10" />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Min Price</label>
-                <Input type="number" name="minPrice" placeholder="Min Price" defaultValue={minPrice} />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Max Price</label>
-                <Input type="number" name="maxPrice" placeholder="Max Price" defaultValue={maxPrice} />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Sort By</label>
-                <Select name="sort" defaultValue={sort}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sort By" />
+              <div className="flex items-center gap-2 w-full md:w-auto">
+                <Select defaultValue={sort}>
+                  <SelectTrigger className="w-full md:w-[180px]">
+                    <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="newest">Newest First</SelectItem>
@@ -142,63 +179,129 @@ export default async function CarsPage({
                   </SelectContent>
                 </Select>
               </div>
+            </div>
 
-              <div className="md:col-span-4 flex justify-end">
-                <Button type="submit">Apply Filters</Button>
+            {/* Results Count */}
+            <div className="mb-6">
+              <p className="text-gray-600">Showing {cars.length} results</p>
+            </div>
+
+            {/* Car Listings */}
+            {cars.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {cars.map((car, index) => (
+                  <Card key={car.id} className="overflow-hidden border-0 shadow-md rounded-xl">
+                    <div className="relative h-56">
+                      <Image
+                        src={car.image_url || `/images/car${(index % 6) + 1}.png`}
+                        alt={`${car.make} ${car.model}`}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute top-4 right-4">
+                        <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white">
+                          <Heart className="h-5 w-5 text-gray-600" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="text-lg font-bold text-gray-900">
+                          {car.make} {car.model}
+                        </h3>
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                          ${car.price.toLocaleString()}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-500 mb-3">
+                        {car.year} • {car.mileage?.toLocaleString() || "N/A"} miles • {car.transmission || "N/A"}
+                      </p>
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="text-sm font-medium">4.8</span>
+                          <span className="text-xs text-gray-500">(24 reviews)</span>
+                        </div>
+                        <Button asChild variant="ghost" size="sm" className="text-primary hover:text-primary">
+                          <Link href={`/cars/${car.id}`}>View Details</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
               </div>
-            </form>
-          </CardContent>
-        </Card>
-
-        {cars.length > 0 ? (
-          <FeaturedCars cars={cars} />
-        ) : (
-          <div className="text-center py-12">
-            <h2 className="text-2xl font-semibold mb-2">No cars found</h2>
-            <p className="text-muted-foreground">Try adjusting your filters to see more results.</p>
+            ) : (
+              <div className="text-center py-12 bg-gray-50 rounded-xl">
+                <h2 className="text-2xl font-semibold mb-2">No cars found</h2>
+                <p className="text-gray-600 mb-6">Try adjusting your filters to see more results.</p>
+                <Button asChild>
+                  <Link href="/cars">Reset Filters</Link>
+                </Button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </main>
 
-      <footer className="bg-secondary py-8">
-        <div className="container mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
+      <footer className="bg-gray-900 text-white py-12 mt-16">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <h3 className="text-lg font-bold mb-4">Car Selling & Buying System</h3>
-              <p>Your trusted platform for buying and selling cars online.</p>
+              <p className="text-gray-400">Your trusted platform for buying and selling cars online.</p>
             </div>
             <div>
               <h3 className="text-lg font-bold mb-4">Quick Links</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/cars" className="hover:underline">
+                  <Link href="/cars" className="text-gray-400 hover:text-white">
                     Browse Cars
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="hover:underline">
+                  <Link href="/about" className="text-gray-400 hover:text-white">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="/support" className="hover:underline">
+                  <Link href="/support" className="text-gray-400 hover:text-white">
                     Support
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="hover:underline">
+                  <Link href="/faq" className="text-gray-400 hover:text-white">
                     FAQ
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
+              <h3 className="text-lg font-bold mb-4">Legal</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/terms" className="text-gray-400 hover:text-white">
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className="text-gray-400 hover:text-white">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/cookies" className="text-gray-400 hover:text-white">
+                    Cookie Policy
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
               <h3 className="text-lg font-bold mb-4">Contact</h3>
-              <p>Email: info@csbs.com</p>
-              <p>Phone: (123) 456-7890</p>
+              <p className="text-gray-400">Email: info@csbs.com</p>
+              <p className="text-gray-400">Phone: (123) 456-7890</p>
             </div>
           </div>
-          <div className="mt-8 pt-4 border-t border-gray-200 text-center">
+          <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
             <p>&copy; {new Date().getFullYear()} Car Selling & Buying System. All rights reserved.</p>
           </div>
         </div>
