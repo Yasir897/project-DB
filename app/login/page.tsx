@@ -40,6 +40,7 @@ export default function LoginPage() {
     },
   })
 
+  // Update the onSubmit function to properly handle login
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
     setError(null)
@@ -61,6 +62,7 @@ export default function LoginPage() {
 
       // Redirect based on role
       router.push(`/dashboard/${values.role}`)
+      router.refresh() // Force a refresh to update the session state
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed")
     } finally {

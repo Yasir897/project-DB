@@ -32,6 +32,7 @@ export async function register(username: string, email: string, password: string
   return result
 }
 
+// Update the login function to properly handle authentication
 export async function login(email: string, password: string, role: string) {
   // Find user by email and role
   const users = await executeQuery<any[]>("SELECT * FROM users WHERE email = ? AND role = ?", [email, role])
@@ -56,32 +57,38 @@ export async function login(email: string, password: string, role: string) {
     role: user.role,
   }
 
+  // Use a more secure cookie setting
   cookies().set("user_session", JSON.stringify(session), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 7, // 1 week
     path: "/",
+    sameSite: "lax",
   })
 
   return session
 }
 
-export async function logout() {
-  cookies().delete("user_session")
-}
-
+// Update the getSession function to handle errors better
 export async function getSession(): Promise<User | null> {
-  const session = cookies().get("user_session")?.value
-
-  if (!session) {
-    return null
-  }
-
   try {
+    const session = cookies().get("user_session")?.value
+
+    if (!session) {
+      return null
+    }
+
     return JSON.parse(session) as User
   } catch (error) {
+    console.error("Session parsing error:", error)
+    // Delete invalid session cookie
+    cookies().delete("user_session")
     return null
   }
+}
+
+export async function logout() {
+  cookies().delete("user_session")
 }
 
 export async function requireAuth(requiredRole?: string | string[]) {

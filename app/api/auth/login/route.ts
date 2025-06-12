@@ -17,6 +17,12 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Login error:", error)
 
-    return NextResponse.json({ message: error instanceof Error ? error.message : "Login failed" }, { status: 401 })
+    return NextResponse.json(
+      {
+        message: error instanceof Error ? error.message : "Login failed",
+        success: false,
+      },
+      { status: 401 },
+    )
   }
 }
