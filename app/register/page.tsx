@@ -94,8 +94,8 @@ export default function RegisterPage() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/50"></div>
+      {/* Overlay with reduced opacity for better text visibility */}
+      <div className="absolute inset-0 bg-black/40"></div>
 
       {/* Back to Home */}
       <Link
@@ -107,7 +107,7 @@ export default function RegisterPage() {
       </Link>
 
       <div className="relative z-10 w-full max-w-md p-4">
-        <Card className="backdrop-blur-sm bg-white/95 shadow-2xl border-0">
+        <Card className="bg-white shadow-2xl border-0">
           <CardHeader className="text-center">
             <div className="mb-4">
               <Link href="/" className="text-3xl font-bold text-blue-600">
@@ -132,7 +132,7 @@ export default function RegisterPage() {
                   name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel className="text-gray-700">Username</FormLabel>
                       <FormControl>
                         <Input placeholder="johndoe" className="bg-white" {...field} />
                       </FormControl>
@@ -146,7 +146,7 @@ export default function RegisterPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="text-gray-700">Email</FormLabel>
                       <FormControl>
                         <Input type="email" placeholder="john@example.com" className="bg-white" {...field} />
                       </FormControl>
@@ -160,7 +160,7 @@ export default function RegisterPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel className="text-gray-700">Password</FormLabel>
                       <FormControl>
                         <Input type="password" placeholder="Create a strong password" className="bg-white" {...field} />
                       </FormControl>
@@ -174,7 +174,7 @@ export default function RegisterPage() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
+                      <FormLabel className="text-gray-700">Confirm Password</FormLabel>
                       <FormControl>
                         <Input type="password" placeholder="Confirm your password" className="bg-white" {...field} />
                       </FormControl>
@@ -188,10 +188,10 @@ export default function RegisterPage() {
                   name="role"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>I want to</FormLabel>
+                      <FormLabel className="text-gray-700">I want to</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="bg-white">
+                          <SelectTrigger className="bg-white text-gray-800">
                             <SelectValue placeholder="Select a role" />
                           </SelectTrigger>
                         </FormControl>

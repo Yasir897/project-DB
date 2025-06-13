@@ -79,8 +79,8 @@ export default function LoginPage() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/50"></div>
+      {/* Overlay with reduced opacity for better text visibility */}
+      <div className="absolute inset-0 bg-black/40"></div>
 
       {/* Back to Home */}
       <Link
@@ -92,7 +92,7 @@ export default function LoginPage() {
       </Link>
 
       <div className="relative z-10 w-full max-w-md p-4">
-        <Card className="backdrop-blur-sm bg-white/95 shadow-2xl border-0">
+        <Card className="bg-white shadow-2xl border-0">
           <CardHeader className="text-center">
             <div className="mb-4">
               <Link href="/" className="text-3xl font-bold text-blue-600">
@@ -126,7 +126,7 @@ export default function LoginPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="text-gray-700">Email</FormLabel>
                       <FormControl>
                         <Input type="email" placeholder="john@example.com" className="bg-white" {...field} />
                       </FormControl>
@@ -140,7 +140,7 @@ export default function LoginPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel className="text-gray-700">Password</FormLabel>
                       <FormControl>
                         <Input type="password" placeholder="Enter your password" className="bg-white" {...field} />
                       </FormControl>
@@ -154,10 +154,10 @@ export default function LoginPage() {
                   name="role"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Login as</FormLabel>
+                      <FormLabel className="text-gray-700">Login as</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="bg-white">
+                          <SelectTrigger className="bg-white text-gray-800">
                             <SelectValue placeholder="Select a role" />
                           </SelectTrigger>
                         </FormControl>
