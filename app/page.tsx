@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { executeQuery } from "@/lib/db"
 import { getSession } from "@/lib/auth"
-import { Search, ChevronRight, Heart, Star, Filter } from "lucide-react"
+import { Search, ChevronRight, Heart, Star, Shield, Users, Clock, Award, CheckCircle, Car } from "lucide-react"
 
 export default async function Home() {
   const session = await getSession()
@@ -16,32 +16,33 @@ export default async function Home() {
      FROM cars c 
      JOIN users u ON c.seller_id = u.id 
      WHERE c.status = 'available' 
-     LIMIT 6`,
+     LIMIT 8`,
   )
-
-  // Get unique makes for filter
-  const makes = await executeQuery<any[]>(`
-    SELECT DISTINCT make FROM cars WHERE status = 'available' ORDER BY make
-  `)
 
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <header className="border-b border-gray-100">
+      <header className="border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur-sm z-50">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-gray-900">
-            CSBS
+          <Link href="/" className="text-2xl font-bold text-blue-600">
+            Yasir Cars
           </Link>
-          <div className="flex items-center gap-6">
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/cars" className="text-gray-600 hover:text-gray-900">
+          <div className="flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-8">
+              <Link href="/cars" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 Browse Cars
               </Link>
-              <Link href="/about" className="text-gray-600 hover:text-gray-900">
+              <Link
+                href="/register?role=seller"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              >
+                Sell Car
+              </Link>
+              <Link href="/about" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 About
               </Link>
-              <Link href="/support" className="text-gray-600 hover:text-gray-900">
-                Support
+              <Link href="/login" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                Login
               </Link>
             </nav>
             {session ? (
@@ -54,110 +55,142 @@ export default async function Home() {
                 </Button>
               </div>
             ) : (
-              <div className="flex items-center gap-4">
-                <Link href="/login" className="text-gray-600 hover:text-gray-900">
-                  Login
-                </Link>
-                <Button asChild size="sm">
-                  <Link href="/register">Register</Link>
-                </Button>
-              </div>
+              <Button asChild className="bg-blue-600 hover:bg-blue-700">
+                <Link href="/register">Get Started</Link>
+              </Button>
             )}
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-r from-gray-50 to-gray-100">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Find Your Perfect Car</h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Browse thousands of cars from trusted sellers. Buy or sell with confidence on our secure platform.
+      <section className="py-20 md:py-32 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+              Find Your <span className="text-blue-600">Dream Car</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 mb-12 leading-relaxed">
+              The most trusted platform for buying and selling quality vehicles.
+              <br className="hidden md:block" />
+              Connect with verified dealers and private sellers.
             </p>
 
-            {/* Search Bar */}
-            <div className="bg-white p-2 rounded-full shadow-lg flex items-center max-w-2xl mx-auto">
-              <div className="flex-1 px-4">
-                <Input
-                  type="text"
-                  placeholder="Search by make, model, or keyword"
-                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
-              </div>
-              <Button size="icon" className="rounded-full">
-                <Search className="h-5 w-5" />
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-4">
+                <Link href="/cars">Browse Cars</Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 py-4 border-blue-600 text-blue-600 hover:bg-blue-50"
+              >
+                <Link href="/register">Get Started</Link>
               </Button>
             </div>
 
-            {/* Quick Filters */}
-            <div className="flex flex-wrap justify-center gap-3 mt-6">
-              {makes.slice(0, 5).map((make) => (
-                <Link
-                  key={make.make}
-                  href={`/cars?make=${make.make}`}
-                  className="bg-white px-4 py-2 rounded-full text-sm border border-gray-200 hover:border-gray-300 transition-colors"
-                >
-                  {make.make}
-                </Link>
-              ))}
-              <Link
-                href="/cars"
-                className="bg-white px-4 py-2 rounded-full text-sm border border-gray-200 hover:border-gray-300 transition-colors flex items-center gap-1"
-              >
-                <Filter className="h-3 w-3" />
-                All Filters
-              </Link>
+            {/* Search Bar */}
+            <div className="bg-white p-3 rounded-2xl shadow-xl flex items-center max-w-2xl mx-auto border">
+              <div className="flex-1 px-4">
+                <Input
+                  type="text"
+                  placeholder="Search by make, model, or keyword..."
+                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-lg"
+                />
+              </div>
+              <Button size="lg" className="rounded-xl bg-blue-600 hover:bg-blue-700">
+                <Search className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section with Animation */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center group">
+              <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
+                <Car className="h-8 w-8 text-blue-600" />
+              </div>
+              <div className="text-4xl font-bold text-gray-900 mb-2 counter" data-target="50000">
+                50K+
+              </div>
+              <div className="text-gray-600 font-medium">Cars Sold</div>
+            </div>
+
+            <div className="text-center group">
+              <div className="bg-green-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-100 transition-colors">
+                <Users className="h-8 w-8 text-green-600" />
+              </div>
+              <div className="text-4xl font-bold text-gray-900 mb-2">25K+</div>
+              <div className="text-gray-600 font-medium">Happy Customers</div>
+            </div>
+
+            <div className="text-center group">
+              <div className="bg-purple-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-100 transition-colors">
+                <Shield className="h-8 w-8 text-purple-600" />
+              </div>
+              <div className="text-4xl font-bold text-gray-900 mb-2">1000+</div>
+              <div className="text-gray-600 font-medium">Verified Dealers</div>
+            </div>
+
+            <div className="text-center group">
+              <div className="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-100 transition-colors">
+                <Clock className="h-8 w-8 text-orange-600" />
+              </div>
+              <div className="text-4xl font-bold text-gray-900 mb-2">24/7</div>
+              <div className="text-gray-600 font-medium">Support</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Featured Cars */}
-      <section className="py-16">
+      <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">Featured Cars</h2>
-            <Link href="/cars" className="text-primary flex items-center gap-1 hover:underline">
-              View all <ChevronRight className="h-4 w-4" />
-            </Link>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Cars Available Now</h2>
+            <p className="text-xl text-gray-600">Discover our handpicked selection of premium vehicles</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredCars.map((car, index) => (
-              <Card key={car.id} className="overflow-hidden border-0 shadow-md rounded-xl">
-                <div className="relative h-56">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredCars.slice(0, 8).map((car, index) => (
+              <Card
+                key={car.id}
+                className="overflow-hidden border-0 shadow-lg rounded-xl hover:shadow-xl transition-shadow group"
+              >
+                <div className="relative h-48">
                   <Image
                     src={car.image_url || `/images/car${(index % 6) + 1}.png`}
                     alt={`${car.make} ${car.model}`}
                     fill
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute top-4 right-4">
+                  <div className="absolute top-3 right-3">
                     <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white">
-                      <Heart className="h-5 w-5 text-gray-600" />
+                      <Heart className="h-4 w-4 text-gray-600" />
                     </Button>
                   </div>
                 </div>
-                <div className="p-5">
+                <div className="p-4">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-bold text-gray-900">
+                    <h3 className="font-bold text-gray-900">
                       {car.make} {car.model}
                     </h3>
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                      ${car.price.toLocaleString()}
-                    </Badge>
+                    <Badge className="bg-blue-600 text-white">${car.price.toLocaleString()}</Badge>
                   </div>
                   <p className="text-sm text-gray-500 mb-3">
-                    {car.year} • {car.mileage?.toLocaleString() || "N/A"} miles • {car.transmission || "N/A"}
+                    {car.year} • {car.mileage?.toLocaleString() || "N/A"} miles
                   </p>
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span className="text-sm font-medium">4.8</span>
-                      <span className="text-xs text-gray-500">(24 reviews)</span>
                     </div>
-                    <Button asChild variant="ghost" size="sm" className="text-primary hover:text-primary">
+                    <Button asChild variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
                       <Link href={`/cars/${car.id}`}>View Details</Link>
                     </Button>
                   </div>
@@ -165,63 +198,101 @@ export default async function Home() {
               </Card>
             ))}
           </div>
+
+          <div className="text-center mt-12">
+            <Button asChild size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+              <Link href="/cars">
+                View All Cars <ChevronRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-16 bg-gray-50">
+      {/* Why Choose Yasir Cars */}
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-12">How It Works</h2>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Yasir Cars?</h2>
+            <p className="text-xl text-gray-600">Experience the difference with our premium car marketplace</p>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="h-8 w-8 text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
+              <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Shield className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-lg font-bold mb-2">Search Cars</h3>
-              <p className="text-gray-600">Browse our extensive collection of quality vehicles from trusted sellers.</p>
+              <h3 className="text-xl font-bold mb-3">Verified Listings</h3>
+              <p className="text-gray-600">
+                Every car is thoroughly inspected and verified by our expert team before listing.
+              </p>
             </div>
 
-            <div className="text-center">
-              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Star className="h-8 w-8 text-primary" />
+            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
+              <div className="bg-green-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-lg font-bold mb-2">Make an Offer</h3>
-              <p className="text-gray-600">Found your dream car? Make an offer directly through our secure platform.</p>
+              <h3 className="text-xl font-bold mb-3">Transparent Pricing</h3>
+              <p className="text-gray-600">
+                No hidden fees or surprises. Get fair market prices with complete transparency.
+              </p>
             </div>
 
-            <div className="text-center">
-              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Heart className="h-8 w-8 text-primary" />
+            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
+              <div className="bg-purple-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Award className="h-8 w-8 text-purple-600" />
               </div>
-              <h3 className="text-lg font-bold mb-2">Drive Happy</h3>
-              <p className="text-gray-600">Complete your purchase with confidence and enjoy your new vehicle.</p>
+              <h3 className="text-xl font-bold mb-3">Expert Support</h3>
+              <p className="text-gray-600">Our dedicated team provides 24/7 support throughout your buying journey.</p>
+            </div>
+
+            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
+              <div className="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="h-8 w-8 text-orange-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Trusted Community</h3>
+              <p className="text-gray-600">
+                Join thousands of satisfied customers who trust Yasir Cars for their vehicle needs.
+              </p>
+            </div>
+
+            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
+              <div className="bg-red-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Clock className="h-8 w-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Quick Process</h3>
+              <p className="text-gray-600">
+                Fast and efficient buying process with minimal paperwork and maximum convenience.
+              </p>
+            </div>
+
+            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
+              <div className="bg-indigo-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star className="h-8 w-8 text-indigo-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Quality Guarantee</h3>
+              <p className="text-gray-600">
+                All vehicles come with quality assurance and comprehensive vehicle history reports.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="bg-gradient-to-r from-primary to-primary/80 rounded-2xl p-8 md:p-12 text-white text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Sell Your Car?</h2>
-            <p className="text-lg mb-8 max-w-2xl mx-auto">
-              List your car for sale and reach thousands of potential buyers on our platform.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" variant="secondary">
-                <Link href="/register?role=seller">Become a Seller</Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="bg-transparent text-white border-white hover:bg-white/10"
-              >
-                <Link href="/learn-more">Learn More</Link>
-              </Button>
-            </div>
+      <section className="py-16 bg-gradient-to-r from-blue-600 to-blue-800">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Find Your Perfect Car?</h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Join thousands of satisfied customers who found their dream cars with Yasir Cars
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-gray-100">
+              <Link href="/cars">Browse Cars Now</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Link href="/register?role=seller">Start Selling</Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -231,8 +302,8 @@ export default async function Home() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-lg font-bold mb-4">Car Selling & Buying System</h3>
-              <p className="text-gray-400">Your trusted platform for buying and selling cars online.</p>
+              <h3 className="text-2xl font-bold mb-4 text-blue-400">Yasir Cars</h3>
+              <p className="text-gray-400">Your trusted platform for buying and selling quality vehicles.</p>
             </div>
             <div>
               <h3 className="text-lg font-bold mb-4">Quick Links</h3>
@@ -281,12 +352,12 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="text-lg font-bold mb-4">Contact</h3>
-              <p className="text-gray-400">Email: info@csbs.com</p>
+              <p className="text-gray-400">Email: info@yasircars.com</p>
               <p className="text-gray-400">Phone: (123) 456-7890</p>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>&copy; {new Date().getFullYear()} Car Selling & Buying System. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Yasir Cars. All rights reserved.</p>
           </div>
         </div>
       </footer>

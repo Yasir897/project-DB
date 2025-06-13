@@ -9,15 +9,25 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  acquireTimeout: 60000,
+  timeout: 60000,
 })
 
 export async function executeQuery<T>(query: string, params: any[] = []): Promise<T> {
+  let connection
   try {
-    const [rows] = await pool.execute(query, params)
+    connection = await pool.getConnection()
+    const [rows] = await connection.execute(query, params)
     return rows as T
   } catch (error) {
     console.error("Database query error:", error)
-    throw new Error("Database query failed")
+    console.error("Query:", query)
+    console.error("Params:", params)
+    throw new Error(`Database query failed: ${error instanceof Error ? error.message : "Unknown error"}`)
+  } finally {
+    if (connection) {
+      connection.release()
+    }
   }
 }
 
