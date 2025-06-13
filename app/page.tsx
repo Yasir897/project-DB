@@ -20,11 +20,14 @@ export default async function Home() {
   )
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Navigation */}
-      <header className="border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur-sm z-50">
+      <header className="border-b border-white/20 sticky top-0 bg-white/80 backdrop-blur-md z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-blue-600">
+          <Link
+            href="/"
+            className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
+          >
             Yasir Cars
           </Link>
           <div className="flex items-center gap-8">
@@ -34,11 +37,11 @@ export default async function Home() {
               </Link>
               <Link
                 href="/register?role=seller"
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
               >
                 Sell Car
               </Link>
-              <Link href="/about" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              <Link href="/about" className="text-gray-700 hover:text-pink-600 font-medium transition-colors">
                 About
               </Link>
               <Link href="/login" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
@@ -55,7 +58,10 @@ export default async function Home() {
                 </Button>
               </div>
             ) : (
-              <Button asChild className="bg-blue-600 hover:bg-blue-700">
+              <Button
+                asChild
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+              >
                 <Link href="/register">Get Started</Link>
               </Button>
             )}
@@ -63,43 +69,73 @@ export default async function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="py-20 md:py-32 bg-gradient-to-br from-blue-50 via-white to-blue-50">
-        <div className="container mx-auto px-4 text-center">
+      {/* Hero Section with Car Background */}
+      <section className="py-20 md:py-32 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 opacity-50"></div>
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%239C92AC' fillOpacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        ></div>
+
+        {/* Floating Car Images */}
+        <div className="absolute top-20 left-10 opacity-20 animate-bounce">
+          <Image src="/images/car1.png" alt="Car" width={100} height={60} className="transform rotate-12" />
+        </div>
+        <div className="absolute top-40 right-20 opacity-20 animate-pulse">
+          <Image src="/images/car2.png" alt="Car" width={120} height={70} className="transform -rotate-12" />
+        </div>
+        <div className="absolute bottom-20 left-1/4 opacity-20 animate-bounce delay-1000">
+          <Image src="/images/car3.png" alt="Car" width={110} height={65} className="transform rotate-6" />
+        </div>
+
+        <div className="container mx-auto px-4 text-center relative z-10">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-              Find Your <span className="text-blue-600">Dream Car</span>
+              Find Your{" "}
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Dream Car
+              </span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-700 mb-12 leading-relaxed">
               The most trusted platform for buying and selling quality vehicles.
               <br className="hidden md:block" />
-              Connect with verified dealers and private sellers.
+              Connect with verified dealers and private sellers worldwide.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-4">
+              <Button
+                asChild
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4 shadow-lg"
+              >
                 <Link href="/cars">Browse Cars</Link>
               </Button>
               <Button
                 asChild
                 size="lg"
                 variant="outline"
-                className="text-lg px-8 py-4 border-blue-600 text-blue-600 hover:bg-blue-50"
+                className="text-lg px-8 py-4 border-2 border-purple-600 text-purple-600 hover:bg-purple-50 shadow-lg"
               >
                 <Link href="/register">Get Started</Link>
               </Button>
             </div>
 
-            {/* Search Bar */}
-            <div className="bg-white p-3 rounded-2xl shadow-xl flex items-center max-w-2xl mx-auto border">
+            {/* Enhanced Search Bar */}
+            <div className="bg-white/90 backdrop-blur-sm p-4 rounded-3xl shadow-2xl flex items-center max-w-2xl mx-auto border border-white/50">
               <div className="flex-1 px-4">
                 <Input
                   type="text"
                   placeholder="Search by make, model, or keyword..."
-                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-lg"
+                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-lg bg-transparent"
                 />
               </div>
-              <Button size="lg" className="rounded-xl bg-blue-600 hover:bg-blue-700">
+              <Button
+                size="lg"
+                className="rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg"
+              >
                 <Search className="h-5 w-5" />
               </Button>
             </div>
@@ -107,52 +143,60 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Stats Section with Animation */}
-      <section className="py-16 bg-white">
+      {/* Animated Stats Section */}
+      <section className="py-16 bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center group">
-              <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
-                <Car className="h-8 w-8 text-blue-600" />
+            <div className="text-center group hover:scale-105 transition-transform">
+              <div className="bg-gradient-to-br from-blue-100 to-blue-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
+                <Car className="h-10 w-10 text-blue-600" />
               </div>
-              <div className="text-4xl font-bold text-gray-900 mb-2 counter" data-target="50000">
+              <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                 50K+
               </div>
-              <div className="text-gray-600 font-medium">Cars Sold</div>
+              <div className="text-gray-700 font-medium">Cars Sold</div>
             </div>
 
-            <div className="text-center group">
-              <div className="bg-green-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-100 transition-colors">
-                <Users className="h-8 w-8 text-green-600" />
+            <div className="text-center group hover:scale-105 transition-transform">
+              <div className="bg-gradient-to-br from-green-100 to-green-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
+                <Users className="h-10 w-10 text-green-600" />
               </div>
-              <div className="text-4xl font-bold text-gray-900 mb-2">25K+</div>
-              <div className="text-gray-600 font-medium">Happy Customers</div>
+              <div className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                25K+
+              </div>
+              <div className="text-gray-700 font-medium">Happy Customers</div>
             </div>
 
-            <div className="text-center group">
-              <div className="bg-purple-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-100 transition-colors">
-                <Shield className="h-8 w-8 text-purple-600" />
+            <div className="text-center group hover:scale-105 transition-transform">
+              <div className="bg-gradient-to-br from-purple-100 to-purple-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
+                <Shield className="h-10 w-10 text-purple-600" />
               </div>
-              <div className="text-4xl font-bold text-gray-900 mb-2">1000+</div>
-              <div className="text-gray-600 font-medium">Verified Dealers</div>
+              <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                1000+
+              </div>
+              <div className="text-gray-700 font-medium">Verified Dealers</div>
             </div>
 
-            <div className="text-center group">
-              <div className="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-100 transition-colors">
-                <Clock className="h-8 w-8 text-orange-600" />
+            <div className="text-center group hover:scale-105 transition-transform">
+              <div className="bg-gradient-to-br from-orange-100 to-orange-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
+                <Clock className="h-10 w-10 text-orange-600" />
               </div>
-              <div className="text-4xl font-bold text-gray-900 mb-2">24/7</div>
-              <div className="text-gray-600 font-medium">Support</div>
+              <div className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-2">
+                24/7
+              </div>
+              <div className="text-gray-700 font-medium">Support</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Cars */}
-      <section className="py-16 bg-gray-50">
+      {/* Featured Cars with Enhanced Design */}
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Cars Available Now</h2>
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-blue-900 bg-clip-text text-transparent mb-4">
+              Featured Cars Available Now
+            </h2>
             <p className="text-xl text-gray-600">Discover our handpicked selection of premium vehicles</p>
           </div>
 
@@ -160,37 +204,50 @@ export default async function Home() {
             {featuredCars.slice(0, 8).map((car, index) => (
               <Card
                 key={car.id}
-                className="overflow-hidden border-0 shadow-lg rounded-xl hover:shadow-xl transition-shadow group"
+                className="overflow-hidden border-0 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300 group bg-white/90 backdrop-blur-sm hover:scale-105"
               >
                 <div className="relative h-48">
                   <Image
                     src={car.image_url || `/images/car${(index % 6) + 1}.png`}
                     alt={`${car.make} ${car.model}`}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.src = "/placeholder.svg?height=200&width=300"
+                    }}
                   />
                   <div className="absolute top-3 right-3">
-                    <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white">
+                    <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white shadow-lg">
                       <Heart className="h-4 w-4 text-gray-600" />
                     </Button>
                   </div>
+                  <div className="absolute bottom-3 left-3">
+                    <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+                      ${car.price.toLocaleString()}
+                    </Badge>
+                  </div>
                 </div>
                 <div className="p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-gray-900">
+                  <div className="mb-2">
+                    <h3 className="font-bold text-lg text-gray-900">
                       {car.make} {car.model}
                     </h3>
-                    <Badge className="bg-blue-600 text-white">${car.price.toLocaleString()}</Badge>
+                    <p className="text-sm text-gray-500">
+                      {car.year} • {car.mileage?.toLocaleString() || "N/A"} miles
+                    </p>
                   </div>
-                  <p className="text-sm text-gray-500 mb-3">
-                    {car.year} • {car.mileage?.toLocaleString() || "N/A"} miles
-                  </p>
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span className="text-sm font-medium">4.8</span>
                     </div>
-                    <Button asChild variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                    >
                       <Link href={`/cars/${car.id}`}>View Details</Link>
                     </Button>
                   </div>
@@ -200,7 +257,12 @@ export default async function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Button asChild size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 shadow-lg"
+            >
               <Link href="/cars">
                 View All Cars <ChevronRight className="ml-2 h-5 w-5" />
               </Link>
@@ -209,18 +271,20 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Why Choose Yasir Cars */}
-      <section className="py-16 bg-white">
+      {/* Enhanced Why Choose Section */}
+      <section className="py-16 bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Yasir Cars?</h2>
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-purple-900 bg-clip-text text-transparent mb-4">
+              Why Choose Yasir Cars?
+            </h2>
             <p className="text-xl text-gray-600">Experience the difference with our premium car marketplace</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
-              <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-8 w-8 text-blue-600" />
+            <div className="text-center p-6 rounded-2xl hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 transition-all duration-300 group">
+              <div className="bg-gradient-to-br from-blue-100 to-blue-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
+                <Shield className="h-10 w-10 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Verified Listings</h3>
               <p className="text-gray-600">
@@ -228,9 +292,9 @@ export default async function Home() {
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
-              <div className="bg-green-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="h-8 w-8 text-green-600" />
+            <div className="text-center p-6 rounded-2xl hover:bg-gradient-to-br hover:from-green-50 hover:to-blue-50 transition-all duration-300 group">
+              <div className="bg-gradient-to-br from-green-100 to-green-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
+                <CheckCircle className="h-10 w-10 text-green-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Transparent Pricing</h3>
               <p className="text-gray-600">
@@ -238,17 +302,17 @@ export default async function Home() {
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
-              <div className="bg-purple-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="h-8 w-8 text-purple-600" />
+            <div className="text-center p-6 rounded-2xl hover:bg-gradient-to-br hover:from-purple-50 hover:to-pink-50 transition-all duration-300 group">
+              <div className="bg-gradient-to-br from-purple-100 to-purple-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
+                <Award className="h-10 w-10 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Expert Support</h3>
               <p className="text-gray-600">Our dedicated team provides 24/7 support throughout your buying journey.</p>
             </div>
 
-            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
-              <div className="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-orange-600" />
+            <div className="text-center p-6 rounded-2xl hover:bg-gradient-to-br hover:from-orange-50 hover:to-red-50 transition-all duration-300 group">
+              <div className="bg-gradient-to-br from-orange-100 to-orange-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
+                <Users className="h-10 w-10 text-orange-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Trusted Community</h3>
               <p className="text-gray-600">
@@ -256,9 +320,9 @@ export default async function Home() {
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
-              <div className="bg-red-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Clock className="h-8 w-8 text-red-600" />
+            <div className="text-center p-6 rounded-2xl hover:bg-gradient-to-br hover:from-red-50 hover:to-pink-50 transition-all duration-300 group">
+              <div className="bg-gradient-to-br from-red-100 to-red-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
+                <Clock className="h-10 w-10 text-red-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Quick Process</h3>
               <p className="text-gray-600">
@@ -266,9 +330,9 @@ export default async function Home() {
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-xl hover:bg-gray-50 transition-colors">
-              <div className="bg-indigo-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Star className="h-8 w-8 text-indigo-600" />
+            <div className="text-center p-6 rounded-2xl hover:bg-gradient-to-br hover:from-indigo-50 hover:to-purple-50 transition-all duration-300 group">
+              <div className="bg-gradient-to-br from-indigo-100 to-indigo-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
+                <Star className="h-10 w-10 text-indigo-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Quality Guarantee</h3>
               <p className="text-gray-600">
@@ -279,52 +343,65 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-blue-800">
-        <div className="container mx-auto px-4 text-center">
+      {/* Enhanced CTA Section */}
+      <section className="py-16 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Find Your Perfect Car?</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
             Join thousands of satisfied customers who found their dream cars with Yasir Cars
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-gray-100">
+            <Button
+              asChild
+              size="lg"
+              variant="secondary"
+              className="bg-white text-purple-600 hover:bg-gray-100 shadow-lg"
+            >
               <Link href="/cars">Browse Cars Now</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-2 border-white text-white hover:bg-white/10 shadow-lg"
+            >
               <Link href="/register?role=seller">Start Selling</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Enhanced Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4 text-blue-400">Yasir Cars</h3>
-              <p className="text-gray-400">Your trusted platform for buying and selling quality vehicles.</p>
+              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Yasir Cars
+              </h3>
+              <p className="text-gray-400">Your trusted platform for buying and selling quality vehicles worldwide.</p>
             </div>
             <div>
               <h3 className="text-lg font-bold mb-4">Quick Links</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/cars" className="text-gray-400 hover:text-white">
+                  <Link href="/cars" className="text-gray-400 hover:text-white transition-colors">
                     Browse Cars
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="text-gray-400 hover:text-white">
+                  <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="/support" className="text-gray-400 hover:text-white">
+                  <Link href="/support" className="text-gray-400 hover:text-white transition-colors">
                     Support
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="text-gray-400 hover:text-white">
+                  <Link href="/faq" className="text-gray-400 hover:text-white transition-colors">
                     FAQ
                   </Link>
                 </li>
@@ -334,17 +411,17 @@ export default async function Home() {
               <h3 className="text-lg font-bold mb-4">Legal</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/terms" className="text-gray-400 hover:text-white">
+                  <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
                     Terms of Service
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy" className="text-gray-400 hover:text-white">
+                  <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/cookies" className="text-gray-400 hover:text-white">
+                  <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors">
                     Cookie Policy
                   </Link>
                 </li>
@@ -354,10 +431,11 @@ export default async function Home() {
               <h3 className="text-lg font-bold mb-4">Contact</h3>
               <p className="text-gray-400">Email: info@yasircars.com</p>
               <p className="text-gray-400">Phone: (123) 456-7890</p>
+              <p className="text-gray-400">Address: 123 Car Street, Auto City, AC 12345</p>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>&copy; {new Date().getFullYear()} Yasir Cars. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Yasir Cars. All rights reserved. Made with ❤️ for car enthusiasts.</p>
           </div>
         </div>
       </footer>

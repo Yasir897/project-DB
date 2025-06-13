@@ -1,16 +1,14 @@
 "use client"
 
 import * as React from "react"
-import type { ToastActionElement } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 5000 // Changed to 5 seconds instead of 1000000
+const TOAST_REMOVE_DELAY = 5000
 
 type ToasterToast = {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
-  action?: ToastActionElement
   open: boolean
   variant?: "default" | "destructive"
 }
@@ -135,7 +133,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-// Export the toast function properly
+// Properly export the toast function
 export function toast({ title, description, variant = "default", ...props }: Toast) {
   const id = genId()
 

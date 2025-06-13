@@ -1,6 +1,6 @@
 import mysql from "mysql2/promise"
 
-// Create a connection pool with correct mysql2 options
+// Create a connection pool with only valid mysql2 options
 const pool = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   port: Number.parseInt(process.env.DB_PORT || "3306"),
@@ -10,7 +10,6 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  // Remove invalid options that cause warnings
   charset: "utf8mb4",
   timezone: "+00:00",
 })

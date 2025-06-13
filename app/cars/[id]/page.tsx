@@ -15,7 +15,7 @@ interface PageProps {
 
 export default async function CarDetailsPage({ params }: PageProps) {
   const session = await getSession()
-  const { id } = await params // Await params properly
+  const { id } = await params // Properly await params
   const carId = Number.parseInt(id)
 
   if (isNaN(carId)) {
@@ -65,13 +65,13 @@ export default async function CarDetailsPage({ params }: PageProps) {
       : ["/images/car1.png", "/images/car2.png", "/images/car3.png"]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Navigation */}
-      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+      <header className="border-b border-white/20 bg-white/80 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link
             href="/"
-            className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+            className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
           >
             CSBS
           </Link>
@@ -104,7 +104,7 @@ export default async function CarDetailsPage({ params }: PageProps) {
                 <Link href="/login" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Login
                 </Link>
-                <Button asChild size="sm">
+                <Button asChild size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
                   <Link href="/register">Register</Link>
                 </Button>
               </div>
@@ -124,7 +124,7 @@ export default async function CarDetailsPage({ params }: PageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Car Images */}
           <div className="lg:col-span-2">
-            <div className="relative h-96 rounded-xl overflow-hidden mb-4 shadow-lg">
+            <div className="relative h-96 rounded-2xl overflow-hidden mb-4 shadow-2xl">
               <Image
                 src={carImages[0] || "/placeholder.svg?height=400&width=600"}
                 alt={`${car.make} ${car.model}`}
@@ -136,10 +136,10 @@ export default async function CarDetailsPage({ params }: PageProps) {
                 }}
               />
               <div className="absolute top-4 right-4 flex gap-2">
-                <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white">
+                <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white shadow-lg">
                   <Heart className="h-5 w-5 text-gray-600" />
                 </Button>
-                <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white">
+                <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white shadow-lg">
                   <Share2 className="h-5 w-5 text-gray-600" />
                 </Button>
               </div>
@@ -147,7 +147,7 @@ export default async function CarDetailsPage({ params }: PageProps) {
 
             <div className="grid grid-cols-4 gap-4">
               {carImages.slice(1).map((image, index) => (
-                <div key={index} className="relative h-24 rounded-lg overflow-hidden shadow-md">
+                <div key={index} className="relative h-24 rounded-xl overflow-hidden shadow-lg">
                   <Image
                     src={image || "/placeholder.svg?height=100&width=150"}
                     alt={`${car.make} ${car.model} - View ${index + 2}`}
@@ -164,75 +164,81 @@ export default async function CarDetailsPage({ params }: PageProps) {
 
             {/* Car Details */}
             <div className="mt-8">
-              <h2 className="text-2xl font-bold mb-1">Vehicle Details</h2>
+              <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-gray-900 to-blue-900 bg-clip-text text-transparent">
+                Vehicle Details
+              </h2>
               <p className="text-gray-600 mb-6">Complete specifications and features</p>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
-                    <Calendar className="h-5 w-5 text-blue-700" />
+                <div className="flex items-center gap-3 p-4 bg-white/80 rounded-xl shadow-md">
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-3 rounded-full">
+                    <Calendar className="h-6 w-6 text-blue-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Year</p>
-                    <p className="font-medium">{car.year}</p>
+                    <p className="font-bold text-lg">{car.year}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
-                    <Gauge className="h-5 w-5 text-blue-700" />
+                <div className="flex items-center gap-3 p-4 bg-white/80 rounded-xl shadow-md">
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-3 rounded-full">
+                    <Gauge className="h-6 w-6 text-blue-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Mileage</p>
-                    <p className="font-medium">{car.mileage?.toLocaleString() || "N/A"} miles</p>
+                    <p className="font-bold text-lg">{car.mileage?.toLocaleString() || "N/A"} miles</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
-                    <Zap className="h-5 w-5 text-blue-700" />
+                <div className="flex items-center gap-3 p-4 bg-white/80 rounded-xl shadow-md">
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-3 rounded-full">
+                    <Zap className="h-6 w-6 text-blue-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Transmission</p>
-                    <p className="font-medium">{car.transmission || "N/A"}</p>
+                    <p className="font-bold text-lg">{car.transmission || "N/A"}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
-                    <Fuel className="h-5 w-5 text-blue-700" />
+                <div className="flex items-center gap-3 p-4 bg-white/80 rounded-xl shadow-md">
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-3 rounded-full">
+                    <Fuel className="h-6 w-6 text-blue-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Fuel Type</p>
-                    <p className="font-medium">{car.fuel_type || "N/A"}</p>
+                    <p className="font-bold text-lg">{car.fuel_type || "N/A"}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
-                    <div className="h-5 w-5 flex items-center justify-center text-blue-700 font-bold">C</div>
+                <div className="flex items-center gap-3 p-4 bg-white/80 rounded-xl shadow-md">
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-3 rounded-full">
+                    <div className="h-6 w-6 flex items-center justify-center text-blue-700 font-bold text-lg">C</div>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Color</p>
-                    <p className="font-medium">{car.color || "N/A"}</p>
+                    <p className="font-bold text-lg">{car.color || "N/A"}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
-                    <Check className="h-5 w-5 text-blue-700" />
+                <div className="flex items-center gap-3 p-4 bg-white/80 rounded-xl shadow-md">
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-3 rounded-full">
+                    <Check className="h-6 w-6 text-blue-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Status</p>
-                    <p className="font-medium capitalize">{car.status}</p>
+                    <p className="font-bold text-lg capitalize">{car.status}</p>
                   </div>
                 </div>
               </div>
 
               <div className="mt-8">
-                <h3 className="text-xl font-bold mb-4">Description</h3>
-                <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-6 rounded-xl border border-gray-100">
-                  <p className="text-gray-700 leading-relaxed">{car.description || "No description provided."}</p>
+                <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-gray-900 to-purple-900 bg-clip-text text-transparent">
+                  Description
+                </h3>
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-6 rounded-2xl border border-gray-100 shadow-lg">
+                  <p className="text-gray-700 leading-relaxed text-lg">
+                    {car.description || "No description provided."}
+                  </p>
                 </div>
               </div>
             </div>
@@ -241,8 +247,8 @@ export default async function CarDetailsPage({ params }: PageProps) {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-4">
-              <Card className="border-0 shadow-xl rounded-xl overflow-hidden bg-white/80 backdrop-blur-sm">
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6">
+              <Card className="border-0 shadow-2xl rounded-2xl overflow-hidden bg-white/90 backdrop-blur-sm">
+                <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h1 className="text-2xl font-bold text-gray-900">
@@ -254,7 +260,7 @@ export default async function CarDetailsPage({ params }: PageProps) {
                         <span className="text-xs text-gray-500">(24 reviews)</span>
                       </div>
                     </div>
-                    <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 text-lg px-3 py-1">
+                    <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 text-xl px-4 py-2 shadow-lg">
                       ${car.price.toLocaleString()}
                     </Badge>
                   </div>
@@ -267,13 +273,13 @@ export default async function CarDetailsPage({ params }: PageProps) {
 
                 <CardContent className="p-6">
                   <div className="mb-6">
-                    <h3 className="font-bold mb-2">Seller Information</h3>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-200 to-purple-200 flex items-center justify-center text-blue-700 font-bold">
+                    <h3 className="font-bold mb-3 text-lg">Seller Information</h3>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-200 to-purple-200 flex items-center justify-center text-blue-700 font-bold text-lg">
                         {car.seller_name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-medium">{car.seller_name}</p>
+                        <p className="font-medium text-lg">{car.seller_name}</p>
                         <p className="text-sm text-gray-500">Member since 2022</p>
                       </div>
                     </div>
@@ -282,7 +288,7 @@ export default async function CarDetailsPage({ params }: PageProps) {
                   {canMakeOffer ? (
                     <MakeOfferForm carId={car.id} buyerId={session.id} carPrice={car.price} />
                   ) : userOffer ? (
-                    <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 text-center">
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
                       <p className="font-medium text-blue-700">
                         You have an offer of ${userOffer.amount.toLocaleString()} pending for this car.
                       </p>
@@ -292,22 +298,22 @@ export default async function CarDetailsPage({ params }: PageProps) {
                       <p className="mb-4 text-gray-600">Please login as a buyer to make an offer on this car.</p>
                       <Button
                         asChild
-                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg"
                       >
                         <Link href="/login">Login</Link>
                       </Button>
                     </div>
                   ) : car.status !== "available" ? (
-                    <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-4 text-center">
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
                       <p className="font-medium text-yellow-700">This car is no longer available.</p>
                     </div>
                   ) : null}
 
                   <div className="mt-6 pt-6 border-t border-gray-200">
-                    <Button variant="outline" className="w-full mb-3 hover:bg-blue-50">
+                    <Button variant="outline" className="w-full mb-3 hover:bg-blue-50 shadow-md">
                       Contact Seller
                     </Button>
-                    <Button variant="outline" className="w-full hover:bg-purple-50">
+                    <Button variant="outline" className="w-full hover:bg-purple-50 shadow-md">
                       Schedule Test Drive
                     </Button>
                   </div>
