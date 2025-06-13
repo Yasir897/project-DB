@@ -7,8 +7,9 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Car Selling and Buying System",
-  description: "A platform for buying and selling cars online",
+  title: "Yasir Cars - Buy & Sell Cars Online",
+  description:
+    "Pakistan's most trusted platform for buying and selling quality cars. Find your perfect vehicle at Yasir Cars.",
   generator: "v0.dev",
 }
 

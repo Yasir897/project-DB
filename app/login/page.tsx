@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Car, Eye, EyeOff, Loader2 } from "lucide-react"
+import { Car, Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -75,19 +75,37 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 text-2xl font-bold text-blue-600">
-            <Car className="h-8 w-8" />
-            CSBS
-          </Link>
-          <p className="text-gray-600 mt-2">Car Selling & Buying System</p>
-        </div>
+    <div
+      className="min-h-screen flex items-center justify-center relative"
+      style={{
+        backgroundImage: "url('/images/login-bg.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Dark overlay for better text visibility */}
+      <div className="absolute inset-0 bg-black/50"></div>
 
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+      {/* Back to Home */}
+      <Link
+        href="/"
+        className="absolute top-6 left-6 z-10 flex items-center gap-2 text-white hover:text-gray-200 transition-colors"
+      >
+        <ArrowLeft className="h-5 w-5" />
+        <span className="font-medium">Back to Home</span>
+      </Link>
+
+      <div className="relative z-10 w-full max-w-md p-4">
+        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
           <CardHeader className="text-center pb-4">
+            {/* Logo */}
+            <div className="mb-4">
+              <Link href="/" className="inline-flex items-center gap-2 text-3xl font-bold text-blue-600">
+                <Car className="h-8 w-8" />
+                Yasir Cars
+              </Link>
+            </div>
             <CardTitle className="text-2xl font-bold text-gray-900">Welcome Back</CardTitle>
             <CardDescription className="text-gray-600">Sign in to your account to continue</CardDescription>
           </CardHeader>

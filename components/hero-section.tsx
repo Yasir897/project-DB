@@ -6,9 +6,10 @@ export function HeroSection() {
     <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl">
-          <h1 className="text-5xl font-bold mb-6">Find Your Perfect Car</h1>
+          <h1 className="text-5xl font-bold mb-6">Find Your Perfect Car at Yasir Cars</h1>
           <p className="text-xl mb-8">
-            Browse thousands of cars from trusted sellers. Buy or sell with confidence on our secure platform.
+            Browse thousands of quality vehicles from trusted sellers. Buy or sell with confidence on Pakistan's most
+            trusted car marketplace.
           </p>
           <div className="flex flex-wrap gap-4">
             <Button size="lg" asChild className="bg-white text-blue-700 hover:bg-gray-100">

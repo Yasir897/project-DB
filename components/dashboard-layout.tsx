@@ -63,7 +63,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
           <SidebarHeader className="p-4 border-b">
             <Link href="/" className="flex items-center gap-2">
               <Car className="h-6 w-6 text-blue-600" />
-              <span className="font-bold text-lg text-gray-900">CSBS</span>
+              <span className="font-bold text-lg text-gray-900">Yasir Cars</span>
             </Link>
           </SidebarHeader>
           <SidebarContent className="p-2">
