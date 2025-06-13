@@ -1,5 +1,8 @@
+"use client"
+
 import type { ReactNode } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import type { User } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,9 +13,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { SidebarProvider } from "@/components/ui/sidebar"
-import { Car, Home, MessageSquare, Settings, ShoppingCart, Users } from "lucide-react"
+import { Car, Home, MessageSquare, Settings, ShoppingCart, Users, Menu } from "lucide-react"
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -20,6 +24,8 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children, user }: DashboardLayoutProps) {
+  const pathname = usePathname()
+
   const menuItems = {
     admin: [
       { icon: Home, label: "Dashboard", href: "/dashboard/admin" },
@@ -52,21 +58,25 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen">
-        <Sidebar>
+      <div className="flex min-h-screen bg-gray-50">
+        <Sidebar className="border-r bg-white">
           <SidebarHeader className="p-4 border-b">
             <Link href="/" className="flex items-center gap-2">
-              <Car className="h-6 w-6" />
-              <span className="font-bold text-lg">CSBS</span>
+              <Car className="h-6 w-6 text-blue-600" />
+              <span className="font-bold text-lg text-gray-900">CSBS</span>
             </Link>
           </SidebarHeader>
-          <SidebarContent>
+          <SidebarContent className="p-2">
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.href}
+                    className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 data-[active=true]:bg-blue-50 data-[active=true]:text-blue-700"
+                  >
                     <Link href={item.href}>
-                      <item.icon className="h-5 w-5" />
+                      <item.icon className="h-4 w-4" />
                       <span>{item.label}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -74,30 +84,44 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               ))}
             </SidebarMenu>
           </SidebarContent>
-          <SidebarFooter className="p-4 border-t">
+          <SidebarFooter className="p-4 border-t bg-gray-50">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium">
                   {user.username.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-sm font-medium">{user.username}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
+                  <p className="text-sm font-medium text-gray-900">{user.username}</p>
+                  <p className="text-xs text-gray-500 capitalize">{user.role}</p>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="text-gray-600 hover:text-gray-900">
                 <Link href="/logout">Logout</Link>
               </Button>
             </div>
           </SidebarFooter>
         </Sidebar>
-        <div className="flex-1">
-          <header className="h-16 border-b flex items-center px-6">
-            <h1 className="text-xl font-bold">{user.role.charAt(0).toUpperCase() + user.role.slice(1)} Dashboard</h1>
+
+        <div className="flex-1 flex flex-col">
+          <header className="h-16 border-b bg-white flex items-center justify-between px-6">
+            <div className="flex items-center gap-4">
+              <SidebarTrigger className="lg:hidden">
+                <Menu className="h-5 w-5" />
+              </SidebarTrigger>
+              <h1 className="text-xl font-semibold text-gray-900">
+                {user.role.charAt(0).toUpperCase() + user.role.slice(1)} Dashboard
+              </h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Welcome, {user.username}</span>
+            </div>
           </header>
-          <main className="p-6">{children}</main>
+          <main className="flex-1 p-6 overflow-auto">{children}</main>
         </div>
       </div>
     </SidebarProvider>
   )
 }
+
+// Default export for easier importing
+export default DashboardLayout
