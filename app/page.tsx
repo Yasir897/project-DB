@@ -1,5 +1,4 @@
 import Link from "next/link"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
@@ -7,6 +6,9 @@ import { Badge } from "@/components/ui/badge"
 import { executeQuery } from "@/lib/db"
 import { getSession } from "@/lib/auth"
 import { Search, ChevronRight, Heart, Star, Shield, Users, Clock, Award, CheckCircle, Car } from "lucide-react"
+import ClientImage from "@/components/ClientImage"
+import { AboutModal } from "@/components/about-modal"
+import { ContactModal } from "@/components/contact-modal"
 
 export default async function Home() {
   const session = await getSession()
@@ -41,9 +43,12 @@ export default async function Home() {
               >
                 Sell Car
               </Link>
-              <Link href="/about" className="text-gray-700 hover:text-pink-600 font-medium transition-colors">
-                About
-              </Link>
+              <AboutModal>
+                <button className="text-gray-700 hover:text-pink-600 font-medium transition-colors">About</button>
+              </AboutModal>
+              <ContactModal>
+                <button className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Contact</button>
+              </ContactModal>
               <Link href="/login" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 Login
               </Link>
@@ -82,13 +87,13 @@ export default async function Home() {
 
         {/* Floating Car Images */}
         <div className="absolute top-20 left-10 opacity-20 animate-bounce">
-          <Image src="/images/car1.png" alt="Car" width={100} height={60} className="transform rotate-12" />
+          <ClientImage src="/images/car1.png" alt="Car" width={100} height={60} className="transform rotate-12" />
         </div>
         <div className="absolute top-40 right-20 opacity-20 animate-pulse">
-          <Image src="/images/car2.png" alt="Car" width={120} height={70} className="transform -rotate-12" />
+          <ClientImage src="/images/car2.png" alt="Car" width={120} height={70} className="transform -rotate-12" />
         </div>
         <div className="absolute bottom-20 left-1/4 opacity-20 animate-bounce delay-1000">
-          <Image src="/images/car3.png" alt="Car" width={110} height={65} className="transform rotate-6" />
+          <ClientImage src="/images/car3.png" alt="Car" width={110} height={65} className="transform rotate-6" />
         </div>
 
         <div className="container mx-auto px-4 text-center relative z-10">
@@ -207,15 +212,12 @@ export default async function Home() {
                 className="overflow-hidden border-0 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300 group bg-white/90 backdrop-blur-sm hover:scale-105"
               >
                 <div className="relative h-48">
-                  <Image
+                  <ClientImage
                     src={car.image_url || `/images/car${(index % 6) + 1}.png`}
                     alt={`${car.make} ${car.model}`}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      target.src = "/placeholder.svg?height=200&width=300"
-                    }}
+                    fallbackSrc="/placeholder.svg?height=200&width=300"
                   />
                   <div className="absolute top-3 right-3">
                     <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white shadow-lg">
@@ -380,7 +382,14 @@ export default async function Home() {
               <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Yasir Cars
               </h3>
-              <p className="text-gray-400">Your trusted platform for buying and selling quality vehicles worldwide.</p>
+              <p className="text-gray-400 mb-4">
+                Your trusted platform for buying and selling quality vehicles worldwide.
+              </p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <p>📍 253-M Block, Sabzazar, Lahore</p>
+                <p>📞 +92 314 4107039</p>
+                <p>✉️ info@yasircars.com</p>
+              </div>
             </div>
             <div>
               <h3 className="text-lg font-bold mb-4">Quick Links</h3>
@@ -391,12 +400,12 @@ export default async function Home() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
-                    About Us
-                  </Link>
+                  <AboutModal>
+                    <button className="text-gray-400 hover:text-white transition-colors">About Us</button>
+                  </AboutModal>
                 </li>
                 <li>
-                  <Link href="/support" className="text-gray-400 hover:text-white transition-colors">
+                  <Link href="/dashboard/support" className="text-gray-400 hover:text-white transition-colors">
                     Support
                   </Link>
                 </li>
@@ -429,9 +438,16 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="text-lg font-bold mb-4">Contact</h3>
-              <p className="text-gray-400">Email: info@yasircars.com</p>
-              <p className="text-gray-400">Phone: (123) 456-7890</p>
-              <p className="text-gray-400">Address: 123 Car Street, Auto City, AC 12345</p>
+              <ContactModal>
+                <Button variant="outline" size="sm" className="mb-3 border-gray-600 text-gray-300 hover:bg-gray-800">
+                  Get in Touch
+                </Button>
+              </ContactModal>
+              <div className="space-y-2 text-sm text-gray-400">
+                <p>Business Hours:</p>
+                <p>Mon-Fri: 9AM-8PM</p>
+                <p>Sat-Sun: 10AM-6PM</p>
+              </div>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
