@@ -1,116 +1,91 @@
 import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
+import bcrypt from "bcryptjs"
 import { executeQuery } from "./db"
-import bcrypt from "bcrypt"
 
-export type User = {
+export interface User {
   id: number
   username: string
   email: string
-  role: "admin" | "seller" | "buyer" | "support"
-}
-
-export async function register(username: string, email: string, password: string, role: string) {
-  try {
-    // Check if user already exists
-    const existingUser = await executeQuery<any[]>("SELECT * FROM users WHERE email = ?", [email])
-
-    if (existingUser.length > 0) {
-      throw new Error("User with this email already exists")
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10)
-
-    // Insert new user
-    const result = await executeQuery<any>("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)", [
-      username,
-      email,
-      hashedPassword,
-      role,
-    ])
-
-    return result
-  } catch (error) {
-    console.error("Registration error:", error)
-    throw error
-  }
-}
-
-export async function login(email: string, password: string, role: string) {
-  try {
-    // Find user by email and role
-    const users = await executeQuery<any[]>("SELECT * FROM users WHERE email = ? AND role = ?", [email, role])
-
-    if (users.length === 0) {
-      throw new Error("Invalid credentials or role")
-    }
-
-    const user = users[0]
-
-    // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-    if (!isPasswordValid) {
-      throw new Error("Invalid credentials")
-    }
-
-    // Set session cookie
-    const session = {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-    }
-
-    cookies().set("user_session", JSON.stringify(session), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-      path: "/",
-      sameSite: "lax",
-    })
-
-    return session
-  } catch (error) {
-    console.error("Login error:", error)
-    throw error
-  }
+  role: "admin" | "buyer" | "seller" | "support"
 }
 
 export async function getSession(): Promise<User | null> {
   try {
-    const session = cookies().get("user_session")?.value
+    const cookieStore = await cookies()
+    const sessionCookie = cookieStore.get("user_session")
 
-    if (!session) {
+    if (!sessionCookie) {
       return null
     }
 
-    return JSON.parse(session) as User
+    const sessionData = JSON.parse(sessionCookie.value)
+
+    // Verify session is still valid by checking user exists
+    const users = await executeQuery<any[]>("SELECT id, username, email, role FROM users WHERE id = ? AND role = ?", [
+      sessionData.id,
+      sessionData.role,
+    ])
+
+    if (users.length === 0) {
+      return null
+    }
+
+    return users[0] as User
   } catch (error) {
-    console.error("Session parsing error:", error)
-    // Delete invalid session cookie
-    cookies().delete("user_session")
+    console.error("Session error:", error)
     return null
   }
 }
 
-export async function logout() {
-  cookies().delete("user_session")
+export async function requireAuth(requiredRole?: string): Promise<User> {
+  const user = await getSession()
+
+  if (!user) {
+    throw new Error("Authentication required")
+  }
+
+  if (requiredRole && user.role !== requiredRole) {
+    throw new Error("Insufficient permissions")
+  }
+
+  return user
 }
 
-export async function requireAuth(requiredRole?: string | string[]) {
-  const session = await getSession()
+export async function login(email: string, password: string, role: string): Promise<User> {
+  const users = await executeQuery<any[]>("SELECT * FROM users WHERE email = ? AND role = ?", [email, role])
 
-  if (!session) {
-    redirect("/login")
+  if (users.length === 0) {
+    throw new Error("Invalid credentials")
   }
 
-  if (requiredRole) {
-    const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole]
-    if (!roles.includes(session.role)) {
-      redirect("/unauthorized")
-    }
+  const user = users[0]
+  const isValidPassword = await bcrypt.compare(password, user.password)
+
+  if (!isValidPassword) {
+    throw new Error("Invalid credentials")
   }
 
-  return session
+  const sessionData = {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+  }
+
+  // Set cookie with proper options
+  const cookieStore = await cookies()
+  cookieStore.set("user_session", JSON.stringify(sessionData), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    path: "/",
+  })
+
+  return sessionData as User
+}
+
+export async function logout() {
+  const cookieStore = await cookies()
+  cookieStore.delete("user_session")
 }

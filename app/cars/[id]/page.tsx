@@ -9,9 +9,14 @@ import { Badge } from "@/components/ui/badge"
 import { MakeOfferForm } from "@/components/make-offer-form"
 import { Heart, Share2, Star, ChevronLeft, Check, MapPin, Calendar, Gauge, Fuel, Zap } from "lucide-react"
 
-export default async function CarDetailsPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>
+}
+
+export default async function CarDetailsPage({ params }: PageProps) {
   const session = await getSession()
-  const carId = Number.parseInt(params.id)
+  const { id } = await params // Await params properly
+  const carId = Number.parseInt(id)
 
   if (isNaN(carId)) {
     notFound()
@@ -53,35 +58,41 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
   // Determine if user can make an offer
   const canMakeOffer = session && session.role === "buyer" && car.status === "available" && !userOffer
 
-  // Use placeholder images if no images are available
+  // Use actual car images with fallbacks
   const carImages =
     images.length > 0
       ? images.map((img) => img.image_url)
       : ["/images/car1.png", "/images/car2.png", "/images/car3.png"]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Navigation */}
-      <header className="border-b border-gray-100">
+      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-gray-900">
+          <Link
+            href="/"
+            className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+          >
             CSBS
           </Link>
           <div className="flex items-center gap-6">
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/cars" className="text-gray-600 hover:text-gray-900">
+              <Link href="/cars" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Browse Cars
               </Link>
-              <Link href="/about" className="text-gray-600 hover:text-gray-900">
+              <Link href="/about" className="text-gray-600 hover:text-gray-900 transition-colors">
                 About
               </Link>
-              <Link href="/support" className="text-gray-600 hover:text-gray-900">
+              <Link href="/support" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Support
               </Link>
             </nav>
             {session ? (
               <div className="flex items-center gap-4">
-                <Link href={`/dashboard/${session.role}`} className="text-gray-600 hover:text-gray-900">
+                <Link
+                  href={`/dashboard/${session.role}`}
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
                   Dashboard
                 </Link>
                 <Button asChild variant="outline" size="sm">
@@ -90,7 +101,7 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
               </div>
             ) : (
               <div className="flex items-center gap-4">
-                <Link href="/login" className="text-gray-600 hover:text-gray-900">
+                <Link href="/login" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Login
                 </Link>
                 <Button asChild size="sm">
@@ -104,7 +115,7 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <Link href="/cars" className="text-gray-600 hover:text-gray-900 flex items-center gap-1">
+          <Link href="/cars" className="text-gray-600 hover:text-gray-900 flex items-center gap-1 transition-colors">
             <ChevronLeft className="h-4 w-4" />
             Back to Cars
           </Link>
@@ -113,12 +124,16 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Car Images */}
           <div className="lg:col-span-2">
-            <div className="relative h-96 rounded-xl overflow-hidden mb-4">
+            <div className="relative h-96 rounded-xl overflow-hidden mb-4 shadow-lg">
               <Image
-                src={carImages[0] || "/placeholder.svg"}
+                src={carImages[0] || "/placeholder.svg?height=400&width=600"}
                 alt={`${car.make} ${car.model}`}
                 fill
                 className="object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.src = "/placeholder.svg?height=400&width=600"
+                }}
               />
               <div className="absolute top-4 right-4 flex gap-2">
                 <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white">
@@ -132,12 +147,16 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
 
             <div className="grid grid-cols-4 gap-4">
               {carImages.slice(1).map((image, index) => (
-                <div key={index} className="relative h-24 rounded-lg overflow-hidden">
+                <div key={index} className="relative h-24 rounded-lg overflow-hidden shadow-md">
                   <Image
-                    src={image || "/placeholder.svg"}
+                    src={image || "/placeholder.svg?height=100&width=150"}
                     alt={`${car.make} ${car.model} - View ${index + 2}`}
                     fill
                     className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.src = "/placeholder.svg?height=100&width=150"
+                    }}
                   />
                 </div>
               ))}
@@ -150,8 +169,8 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 <div className="flex items-center gap-3">
-                  <div className="bg-gray-100 p-2 rounded-full">
-                    <Calendar className="h-5 w-5 text-gray-700" />
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
+                    <Calendar className="h-5 w-5 text-blue-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Year</p>
@@ -160,8 +179,8 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="bg-gray-100 p-2 rounded-full">
-                    <Gauge className="h-5 w-5 text-gray-700" />
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
+                    <Gauge className="h-5 w-5 text-blue-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Mileage</p>
@@ -170,8 +189,8 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="bg-gray-100 p-2 rounded-full">
-                    <Zap className="h-5 w-5 text-gray-700" />
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
+                    <Zap className="h-5 w-5 text-blue-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Transmission</p>
@@ -180,8 +199,8 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="bg-gray-100 p-2 rounded-full">
-                    <Fuel className="h-5 w-5 text-gray-700" />
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
+                    <Fuel className="h-5 w-5 text-blue-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Fuel Type</p>
@@ -190,8 +209,8 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="bg-gray-100 p-2 rounded-full">
-                    <div className="h-5 w-5 flex items-center justify-center text-gray-700 font-bold">C</div>
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
+                    <div className="h-5 w-5 flex items-center justify-center text-blue-700 font-bold">C</div>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Color</p>
@@ -200,8 +219,8 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="bg-gray-100 p-2 rounded-full">
-                    <Check className="h-5 w-5 text-gray-700" />
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 rounded-full">
+                    <Check className="h-5 w-5 text-blue-700" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Status</p>
@@ -212,7 +231,7 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
 
               <div className="mt-8">
                 <h3 className="text-xl font-bold mb-4">Description</h3>
-                <div className="bg-gray-50 p-6 rounded-xl">
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-6 rounded-xl border border-gray-100">
                   <p className="text-gray-700 leading-relaxed">{car.description || "No description provided."}</p>
                 </div>
               </div>
@@ -222,8 +241,8 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-4">
-              <Card className="border-0 shadow-lg rounded-xl overflow-hidden">
-                <div className="bg-gray-50 p-6">
+              <Card className="border-0 shadow-xl rounded-xl overflow-hidden bg-white/80 backdrop-blur-sm">
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h1 className="text-2xl font-bold text-gray-900">
@@ -235,7 +254,7 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
                         <span className="text-xs text-gray-500">(24 reviews)</span>
                       </div>
                     </div>
-                    <Badge className="bg-primary text-white border-0 text-lg px-3 py-1">
+                    <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 text-lg px-3 py-1">
                       ${car.price.toLocaleString()}
                     </Badge>
                   </div>
@@ -250,7 +269,7 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
                   <div className="mb-6">
                     <h3 className="font-bold mb-2">Seller Information</h3>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-bold">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-200 to-purple-200 flex items-center justify-center text-blue-700 font-bold">
                         {car.seller_name.charAt(0).toUpperCase()}
                       </div>
                       <div>
@@ -271,7 +290,10 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
                   ) : !session ? (
                     <div className="text-center">
                       <p className="mb-4 text-gray-600">Please login as a buyer to make an offer on this car.</p>
-                      <Button asChild className="w-full">
+                      <Button
+                        asChild
+                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                      >
                         <Link href="/login">Login</Link>
                       </Button>
                     </div>
@@ -282,10 +304,10 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
                   ) : null}
 
                   <div className="mt-6 pt-6 border-t border-gray-200">
-                    <Button variant="outline" className="w-full mb-3">
+                    <Button variant="outline" className="w-full mb-3 hover:bg-blue-50">
                       Contact Seller
                     </Button>
-                    <Button variant="outline" className="w-full">
+                    <Button variant="outline" className="w-full hover:bg-purple-50">
                       Schedule Test Drive
                     </Button>
                   </div>
@@ -307,22 +329,22 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
               <h3 className="text-lg font-bold mb-4">Quick Links</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/cars" className="text-gray-400 hover:text-white">
+                  <Link href="/cars" className="text-gray-400 hover:text-white transition-colors">
                     Browse Cars
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="text-gray-400 hover:text-white">
+                  <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="/support" className="text-gray-400 hover:text-white">
+                  <Link href="/support" className="text-gray-400 hover:text-white transition-colors">
                     Support
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="text-gray-400 hover:text-white">
+                  <Link href="/faq" className="text-gray-400 hover:text-white transition-colors">
                     FAQ
                   </Link>
                 </li>
@@ -332,17 +354,17 @@ export default async function CarDetailsPage({ params }: { params: { id: string 
               <h3 className="text-lg font-bold mb-4">Legal</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/terms" className="text-gray-400 hover:text-white">
+                  <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
                     Terms of Service
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy" className="text-gray-400 hover:text-white">
+                  <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/cookies" className="text-gray-400 hover:text-white">
+                  <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors">
                     Cookie Policy
                   </Link>
                 </li>

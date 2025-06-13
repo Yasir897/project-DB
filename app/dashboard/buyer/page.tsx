@@ -1,10 +1,12 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { requireAuth } from "@/lib/auth"
 import { executeQuery } from "@/lib/db"
 import { DashboardLayout } from "@/components/dashboard-layout"
-import { Car, ShoppingCart, ThumbsUp } from "lucide-react"
+import { Car, ShoppingCart, ThumbsUp, Eye, Clock, CheckCircle } from "lucide-react"
 
 export default async function BuyerDashboard() {
   const user = await requireAuth("buyer")
@@ -22,7 +24,8 @@ export default async function BuyerDashboard() {
 
   // Fetch recent offers
   const recentOffers = await executeQuery<any[]>(
-    `SELECT o.id, o.amount, o.status, o.created_at, c.make, c.model, u.username as seller 
+    `SELECT o.id, o.amount, o.status, o.created_at, c.make, c.model, c.year, c.price, u.username as seller,
+     (SELECT image_url FROM car_images WHERE car_id = c.id AND is_primary = TRUE LIMIT 1) as image_url
      FROM offers o 
      JOIN cars c ON o.car_id = c.id 
      JOIN users u ON c.seller_id = u.id 
@@ -44,41 +47,165 @@ export default async function BuyerDashboard() {
 
   return (
     <DashboardLayout user={user}>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Buyer Dashboard</h2>
-        <Button asChild>
-          <Link href="/cars">Browse Cars</Link>
-        </Button>
-      </div>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Buyer Dashboard
+            </h2>
+            <p className="text-gray-600 mt-1">Welcome back, {user.username}!</p>
+          </div>
+          <Button
+            asChild
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          >
+            <Link href="/cars">Browse Cars</Link>
+          </Button>
+        </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">My Offers</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+        {/* Stats Cards */}
+        <div className="grid gap-6 md:grid-cols-3">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-blue-700">My Offers</CardTitle>
+              <ShoppingCart className="h-5 w-5 text-blue-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-blue-800">{offerCount}</div>
+              <p className="text-xs text-blue-600 mt-1">Total offers made</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-green-700">Accepted Offers</CardTitle>
+              <ThumbsUp className="h-5 w-5 text-green-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-green-800">{acceptedCount}</div>
+              <p className="text-xs text-green-600 mt-1">Offers accepted</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-purple-100">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-purple-700">Purchases</CardTitle>
+              <Car className="h-5 w-5 text-purple-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-purple-800">{purchaseCount}</div>
+              <p className="text-xs text-purple-600 mt-1">Cars purchased</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Recent Offers */}
+        <Card className="border-0 shadow-lg">
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <CardTitle className="text-xl font-bold">Recent Offers</CardTitle>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/dashboard/buyer/offers">View All</Link>
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{offerCount}</div>
+            {recentOffers.length > 0 ? (
+              <div className="space-y-4">
+                {recentOffers.map((offer) => (
+                  <div key={offer.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-16 h-12 rounded-lg overflow-hidden">
+                        <Image
+                          src={offer.image_url || "/images/car1.png"}
+                          alt={`${offer.make} ${offer.model}`}
+                          fill
+                          className="object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.src = "/placeholder.svg?height=50&width=70"
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <h4 className="font-medium">
+                          {offer.make} {offer.model} {offer.year}
+                        </h4>
+                        <p className="text-sm text-gray-600">Seller: {offer.seller}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold">${offer.amount.toLocaleString()}</p>
+                      <Badge
+                        variant={
+                          offer.status === "accepted"
+                            ? "default"
+                            : offer.status === "rejected"
+                              ? "destructive"
+                              : "secondary"
+                        }
+                        className="mt-1"
+                      >
+                        {offer.status === "accepted" && <CheckCircle className="w-3 h-3 mr-1" />}
+                        {offer.status === "pending" && <Clock className="w-3 h-3 mr-1" />}
+                        {offer.status}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600">No offers made yet</p>
+                <Button asChild className="mt-4">
+                  <Link href="/cars">Browse Cars to Make Offers</Link>
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Accepted Offers</CardTitle>
-            <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+        {/* Recommended Cars */}
+        <Card className="border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold">Recommended Cars</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{acceptedCount}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Purchases</CardTitle>
-            <Car className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{purchaseCount}</div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {recommendedCars.map((car) => (
+                <Card key={car.id} className="border-0 shadow-md hover:shadow-lg transition-shadow">
+                  <div className="relative h-48 rounded-t-lg overflow-hidden">
+                    <Image
+                      src={car.image_url || "/images/car1.png"}
+                      alt={`${car.make} ${car.model}`}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.src = "/placeholder.svg?height=200&width=300"
+                      }}
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-bold text-lg">
+                      {car.make} {car.model} {car.year}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-2">Seller: {car.seller}</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-2xl font-bold text-green-600">${car.price.toLocaleString()}</span>
+                      <Button asChild size="sm">
+                        <Link href={`/cars/${car.id}`}>
+                          <Eye className="w-4 h-4 mr-1" />
+                          View
+                        </Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>

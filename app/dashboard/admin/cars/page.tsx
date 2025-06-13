@@ -16,12 +16,12 @@ export default async function AdminCarsPage({
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
   const user = await requireAuth("admin")
-
+  
   // Get filter parameters
-  const make = typeof searchParams.make === "string" ? searchParams.make : ""
-  const status = typeof searchParams.status === "string" ? searchParams.status : ""
+  const make = typeof searchParams.make === "string" ? searchParams.make : undefined
+  const status = typeof searchParams.status === "string" ? searchParams.status : undefined
   const sort = typeof searchParams.sort === "string" ? searchParams.sort : "newest"
-  const search = typeof searchParams.search === "string" ? searchParams.search : ""
+  const search = typeof searchParams.search === "string" ? searchParams.search : undefined
 
   // Build query
   let query = `
@@ -93,7 +93,7 @@ export default async function AdminCarsPage({
                 <Input placeholder="Search cars..." className="pl-9" defaultValue={search} />
               </div>
             </div>
-
+            
             <div>
               <label className="text-sm font-medium mb-1 block text-gray-700">Make</label>
               <Select defaultValue={make}>
@@ -101,7 +101,7 @@ export default async function AdminCarsPage({
                   <SelectValue placeholder="All Makes" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Makes</SelectItem>
+                  <SelectItem value="">All Makes</SelectItem>
                   {makes.map((m) => (
                     <SelectItem key={m.make} value={m.make}>
                       {m.make}
@@ -110,7 +110,7 @@ export default async function AdminCarsPage({
                 </SelectContent>
               </Select>
             </div>
-
+            
             <div>
               <label className="text-sm font-medium mb-1 block text-gray-700">Status</label>
               <Select defaultValue={status}>
@@ -118,14 +118,14 @@ export default async function AdminCarsPage({
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="">All Status</SelectItem>
                   <SelectItem value="available">Available</SelectItem>
                   <SelectItem value="sold">Sold</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-
+            
             <div>
               <label className="text-sm font-medium mb-1 block text-gray-700">Sort By</label>
               <Select defaultValue={sort}>
@@ -140,7 +140,7 @@ export default async function AdminCarsPage({
               </Select>
             </div>
           </div>
-
+          
           <div className="flex justify-end mt-4">
             <Button className="mr-2" variant="outline">
               Reset Filters
@@ -163,7 +163,7 @@ export default async function AdminCarsPage({
           <div>Listed Date</div>
           <div>Actions</div>
         </div>
-
+        
         {cars.length > 0 ? (
           <div className="divide-y">
             {cars.map((car) => (
@@ -187,15 +187,11 @@ export default async function AdminCarsPage({
                 <div className="font-medium">${car.price.toLocaleString()}</div>
                 <div>{car.year}</div>
                 <div>
-                  <Badge
-                    className={
-                      car.status === "available"
-                        ? "bg-green-100 text-green-800 hover:bg-green-100"
-                        : car.status === "sold"
-                          ? "bg-blue-100 text-blue-800 hover:bg-blue-100"
-                          : "bg-amber-100 text-amber-800 hover:bg-amber-100"
-                    }
-                  >
+                  <Badge className={
+                    car.status === 'available' ? 'bg-green-100 text-green-800 hover:bg-green-100' :
+                    car.status === 'sold' ? 'bg-blue-100 text-blue-800 hover:bg-blue-100' :
+                    'bg-amber-100 text-amber-800 hover:bg-amber-100'
+                  }>
                     {car.status}
                   </Badge>
                 </div>
@@ -212,12 +208,7 @@ export default async function AdminCarsPage({
                       <Edit className="h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                    title="Delete"
-                  >
+                  <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700 hover:bg-red-50" title="Delete">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -245,12 +236,4 @@ export default async function AdminCarsPage({
             <Button variant="outline" size="sm" disabled>
               Previous
             </Button>
-            <Button variant="outline" size="sm">
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
-    </DashboardLayout>
-  )
-}
+            <Button\

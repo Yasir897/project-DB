@@ -1,12 +1,10 @@
 "use client"
 
-// Inspired by react-hot-toast library
 import * as React from "react"
-
 import type { ToastActionElement } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_REMOVE_DELAY = 5000 // Changed to 5 seconds instead of 1000000
 
 type ToasterToast = {
   id: string
@@ -90,8 +88,6 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -139,7 +135,8 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-function toast({ title, description, variant = "default" }: Toast) {
+// Export the toast function properly
+export function toast({ title, description, variant = "default", ...props }: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -160,6 +157,7 @@ function toast({ title, description, variant = "default" }: Toast) {
       onOpenChange: (open) => {
         if (!open) dismiss()
       },
+      ...props,
     },
   })
 
@@ -170,7 +168,7 @@ function toast({ title, description, variant = "default" }: Toast) {
   }
 }
 
-function useToast() {
+export function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
 
   React.useEffect(() => {
@@ -189,5 +187,3 @@ function useToast() {
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
-
-export { useToast }
