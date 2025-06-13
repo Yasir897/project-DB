@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import Image from "next/image"
 import { useState } from "react"
 
@@ -13,6 +15,10 @@ interface ClientImageProps {
   fallbackSrc?: string
   priority?: boolean
   sizes?: string
+  quality?: number
+  placeholder?: "blur" | "empty"
+  blurDataURL?: string
+  style?: React.CSSProperties
 }
 
 export default function ClientImage({
@@ -25,6 +31,11 @@ export default function ClientImage({
   fallbackSrc = "/placeholder.svg?height=200&width=300",
   priority = false,
   sizes,
+  quality,
+  placeholder,
+  blurDataURL,
+  style,
+  ...props
 }: ClientImageProps) {
   const [imgSrc, setImgSrc] = useState(src)
   const [hasError, setHasError] = useState(false)
@@ -36,17 +47,23 @@ export default function ClientImage({
     }
   }
 
-  return (
-    <Image
-      src={imgSrc || "/placeholder.svg"}
-      alt={alt}
-      width={fill ? undefined : width}
-      height={fill ? undefined : height}
-      fill={fill}
-      className={className}
-      onError={handleError}
-      priority={priority}
-      sizes={sizes}
-    />
-  )
+  const imageProps = {
+    src: imgSrc || "/placeholder.svg",
+    alt,
+    className,
+    onError: handleError,
+    priority,
+    sizes,
+    quality,
+    placeholder,
+    blurDataURL,
+    style,
+    ...props,
+  }
+
+  if (fill) {
+    return <Image {...imageProps} fill />
+  }
+
+  return <Image {...imageProps} width={width || 300} height={height || 200} />
 }
