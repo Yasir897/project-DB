@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import Image from "next/image"
+import ClientImage from "@/components/ClientImage"
 import Link from "next/link"
 import { getSession } from "@/lib/auth"
 import { executeQuery } from "@/lib/db"
@@ -125,15 +125,12 @@ export default async function CarDetailsPage({ params }: PageProps) {
           {/* Car Images */}
           <div className="lg:col-span-2">
             <div className="relative h-96 rounded-2xl overflow-hidden mb-4 shadow-2xl">
-              <Image
+              <ClientImage
                 src={carImages[0] || "/placeholder.svg?height=400&width=600"}
                 alt={`${car.make} ${car.model}`}
                 fill
                 className="object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement
-                  target.src = "/placeholder.svg?height=400&width=600"
-                }}
+                fallbackSrc="/placeholder.svg?height=400&width=600"
               />
               <div className="absolute top-4 right-4 flex gap-2">
                 <Button variant="ghost" size="icon" className="rounded-full bg-white/80 hover:bg-white shadow-lg">
@@ -148,15 +145,12 @@ export default async function CarDetailsPage({ params }: PageProps) {
             <div className="grid grid-cols-4 gap-4">
               {carImages.slice(1).map((image, index) => (
                 <div key={index} className="relative h-24 rounded-xl overflow-hidden shadow-lg">
-                  <Image
+                  <ClientImage
                     src={image || "/placeholder.svg?height=100&width=150"}
                     alt={`${car.make} ${car.model} - View ${index + 2}`}
                     fill
                     className="object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      target.src = "/placeholder.svg?height=100&width=150"
-                    }}
+                    fallbackSrc="/placeholder.svg?height=100&width=150"
                   />
                 </div>
               ))}

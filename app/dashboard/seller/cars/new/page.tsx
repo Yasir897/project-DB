@@ -73,7 +73,8 @@ export default function NewCarListingPage() {
         description: "Car listing created successfully",
       })
 
-      router.push(`/dashboard/seller/cars/${data.carId}/images`)
+      // Redirect to seller cars page instead of images page
+      router.push("/dashboard/seller/cars")
     } catch (error) {
       toast({
         title: "Error",

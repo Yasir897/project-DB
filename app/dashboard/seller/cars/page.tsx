@@ -1,5 +1,4 @@
 import Link from "next/link"
-import Image from "next/image"
 import { requireAuth } from "@/lib/auth"
 import { executeQuery } from "@/lib/db"
 import { DashboardLayout } from "@/components/dashboard-layout"
@@ -7,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PlusCircle } from "lucide-react"
+import { CarModal } from "@/components/car-modal"
+import ClientImage from "@/components/ClientImage"
 
 export default async function SellerCarsPage() {
   const user = await requireAuth("seller")
@@ -39,11 +40,12 @@ export default async function SellerCarsPage() {
           {cars.map((car) => (
             <Card key={car.id} className="overflow-hidden">
               <div className="relative h-48">
-                <Image
+                <ClientImage
                   src={car.image_url || `/placeholder.svg?height=400&width=600`}
                   alt={`${car.make} ${car.model}`}
                   fill
                   className="object-cover"
+                  fallbackSrc="/placeholder.svg?height=400&width=600"
                 />
                 <Badge
                   className={`absolute top-2 right-2 ${
@@ -72,12 +74,16 @@ export default async function SellerCarsPage() {
                   )}
 
                   <div className="flex gap-2 ml-auto">
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/cars/${car.id}`}>View</Link>
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/dashboard/seller/cars/${car.id}/edit`}>Edit</Link>
-                    </Button>
+                    <CarModal car={car} mode="view">
+                      <Button variant="outline" size="sm">
+                        View
+                      </Button>
+                    </CarModal>
+                    <CarModal car={car} mode="edit">
+                      <Button variant="outline" size="sm">
+                        Edit
+                      </Button>
+                    </CarModal>
                   </div>
                 </div>
               </CardContent>

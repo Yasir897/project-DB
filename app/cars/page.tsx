@@ -12,15 +12,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export default async function CarsPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+  const params = await searchParams
   const session = await getSession()
 
   // Get filter parameters
-  const make = typeof searchParams.make === "string" ? searchParams.make : undefined
-  const minPrice = typeof searchParams.minPrice === "string" ? Number.parseInt(searchParams.minPrice) : undefined
-  const maxPrice = typeof searchParams.maxPrice === "string" ? Number.parseInt(searchParams.maxPrice) : undefined
-  const sort = typeof searchParams.sort === "string" ? searchParams.sort : "newest"
+  const make = typeof params.make === "string" ? params.make : undefined
+  const minPrice = typeof params.minPrice === "string" ? Number.parseInt(params.minPrice) : undefined
+  const maxPrice = typeof params.maxPrice === "string" ? Number.parseInt(params.maxPrice) : undefined
+  const sort = typeof params.sort === "string" ? params.sort : "newest"
 
   // Build query
   let query = `

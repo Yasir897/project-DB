@@ -134,7 +134,11 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel className="text-gray-700">Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="johndoe" className="bg-white" {...field} />
+                        <Input
+                          placeholder="johndoe"
+                          className="bg-white text-gray-900 placeholder:text-gray-500"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -148,7 +152,12 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel className="text-gray-700">Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="john@example.com" className="bg-white" {...field} />
+                        <Input
+                          type="email"
+                          placeholder="john@example.com"
+                          className="bg-white text-gray-900 placeholder:text-gray-500"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -162,7 +171,12 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel className="text-gray-700">Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Create a strong password" className="bg-white" {...field} />
+                        <Input
+                          type="password"
+                          placeholder="Create a strong password"
+                          className="bg-white text-gray-900 placeholder:text-gray-500"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -176,7 +190,12 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel className="text-gray-700">Confirm Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Confirm your password" className="bg-white" {...field} />
+                        <Input
+                          type="password"
+                          placeholder="Confirm your password"
+                          className="bg-white text-gray-900 placeholder:text-gray-500"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -191,7 +210,7 @@ export default function RegisterPage() {
                       <FormLabel className="text-gray-700">I want to</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="bg-white text-gray-800">
+                          <SelectTrigger className="bg-white text-gray-900">
                             <SelectValue placeholder="Select a role" />
                           </SelectTrigger>
                         </FormControl>
