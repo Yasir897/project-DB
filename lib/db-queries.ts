@@ -1,4 +1,4 @@
-// Fixed SQL queries for MariaDB with proper UNION ALL syntax
+// Fixed SQL queries for MariaDB with proper error handling
 export const getRecentActivities = `
 (
   SELECT 'new_user' as type, u.username as name, u.created_at as date, u.role as details, u.id as entity_id
@@ -23,7 +23,7 @@ UNION ALL
   LIMIT 5
 )
 ORDER BY date DESC
-LIMIT 10;
+LIMIT 10
 `
 
 export const getTopSellers = `
@@ -40,7 +40,7 @@ LEFT JOIN purchases p ON u.id = p.seller_id
 WHERE u.role = 'seller'
 GROUP BY u.id, u.username, u.email
 ORDER BY total_revenue DESC, cars_sold DESC
-LIMIT 5;
+LIMIT 5
 `
 
 export const getPopularCars = `
@@ -50,13 +50,49 @@ SELECT
   c.model,
   c.year,
   c.price,
-  c.image_url,
+  COALESCE(c.image_url, CONCAT('/images/car', ((c.id - 1) % 6) + 1, '.png')) as image_url,
   COUNT(o.id) as offer_count,
-  MAX(o.amount) as highest_offer
+  MAX(o.amount) as highest_offer,
+  COALESCE(c.views, 0) as views
 FROM cars c
 LEFT JOIN offers o ON c.id = o.car_id
 WHERE c.status = 'available'
-GROUP BY c.id, c.make, c.model, c.year, c.price, c.image_url
+GROUP BY c.id, c.make, c.model, c.year, c.price, c.image_url, c.views
 ORDER BY offer_count DESC, highest_offer DESC
-LIMIT 6;
+LIMIT 6
+`
+
+export const getRecentUsers = `
+SELECT 
+  id, 
+  username, 
+  email, 
+  role, 
+  created_at,
+  (SELECT COUNT(*) FROM cars WHERE seller_id = users.id) as car_count,
+  (SELECT COUNT(*) FROM offers WHERE buyer_id = users.id) as offer_count
+FROM users 
+ORDER BY created_at DESC 
+LIMIT 8
+`
+
+export const getRecentCars = `
+SELECT 
+  c.id, 
+  c.make, 
+  c.model, 
+  c.year, 
+  c.price, 
+  c.status, 
+  c.mileage, 
+  c.created_at,
+  u.username as seller, 
+  u.email as seller_email,
+  (SELECT COUNT(*) FROM offers WHERE car_id = c.id) as offer_count,
+  COALESCE(c.image_url, CONCAT('/images/car', ((c.id - 1) % 6) + 1, '.png')) as image_url,
+  COALESCE(c.views, 0) as views
+FROM cars c 
+JOIN users u ON c.seller_id = u.id 
+ORDER BY c.created_at DESC 
+LIMIT 8
 `

@@ -13,9 +13,6 @@ interface ClientImageProps {
   fallbackSrc?: string
   priority?: boolean
   sizes?: string
-  quality?: number
-  placeholder?: "blur" | "empty"
-  blurDataURL?: string
 }
 
 export default function ClientImage({
@@ -23,15 +20,11 @@ export default function ClientImage({
   alt,
   width,
   height,
-  fill,
-  className,
+  fill = false,
+  className = "",
   fallbackSrc = "/placeholder.svg?height=200&width=300",
-  priority,
+  priority = false,
   sizes,
-  quality,
-  placeholder,
-  blurDataURL,
-  ...props
 }: ClientImageProps) {
   const [imgSrc, setImgSrc] = useState(src)
   const [hasError, setHasError] = useState(false)
@@ -47,17 +40,13 @@ export default function ClientImage({
     <Image
       src={imgSrc || "/placeholder.svg"}
       alt={alt}
-      width={width}
-      height={height}
+      width={fill ? undefined : width}
+      height={fill ? undefined : height}
       fill={fill}
       className={className}
       onError={handleError}
       priority={priority}
       sizes={sizes}
-      quality={quality}
-      placeholder={placeholder}
-      blurDataURL={blurDataURL}
-      {...props}
     />
   )
 }
